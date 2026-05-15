@@ -1,22 +1,16 @@
 name = "dnukha-server"
 main = "src/index.ts"
-compatibility_date = "2024-05-15"
+compatibility_date = "2024-01-01"
 
 [[d1_databases]]
 binding = "DB"
 database_name = "birthday_db"
-database_id = "your-database-id-here"  # заменить после wrangler d1 create birthday_db
+database_id = "f8ebfe41-968f-4761-9df8-85cb767089b1"
 
 [vars]
 OPENROUTER_MODEL_PRIMARY  = "meta-llama/llama-3.1-8b-instruct:free"
 OPENROUTER_MODEL_FALLBACK = "google/gemma-2-9b-it:free"
-HETZNER_URL = "http://your-hetzner-ip:8000"  # заменить после деплоя Hetzner
+HETZNER_URL = "http://89.167.94.140:8000"
 
-# Secrets (добавить через: wrangler secret put <NAME>)
-# OPENROUTER_API_KEY
-# INTERNAL_TOKEN     — общий токен между CF и Hetzner
-# DECRYPTION_KEY     — мастер-ключ AES-256 для сессий
-# BOT_TOKEN          — токен Telegram бота
-
-[[triggers]]
-crons = ["*/30 * * * *"]  # каждые 30 минут
+[triggers]
+crons = ["*/30 * * * *"]

@@ -186,7 +186,26 @@ input:checked + .slider:before { transform: translateX(22px); }
 }
 .ob-feature-icon { font-size: 24px; flex-shrink: 0; }
 .ob-btn { margin-top: 12px; }
-.ob-legal { color: var(--text-muted); font-size: 12px; text-align: center; margin-top: 12px; }
+.ob-legal {
+  font-size: 12px;
+  color: #8e8e93;
+  margin-top: 16px;
+}
+
+.ob-disclaimer {
+  font-size: 13px;
+  color: #8e8e93;
+  margin-top: 24px;
+  padding: 12px;
+  background: #f2f2f7;
+  border-radius: 12px;
+  line-height: 1.4;
+  text-align: left;
+}
+
+.ob-disclaimer b {
+  color: #000;
+}
 .ob-legal a { color: var(--accent); text-decoration: none; }
 .ob-tg-link {
   display: inline-block; margin-bottom: 20px;

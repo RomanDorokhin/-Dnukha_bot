@@ -11,7 +11,13 @@ export default function Onboarding({ onComplete }: Props) {
   const [phone, setPhone] = useState('');
   const [code, setCode] = useState('');
   const [codeHash, setCodeHash] = useState('');
-  const [sessionRef] = useState(() => crypto.randomUUID());
+  const [sessionRef] = useState(() => {
+    try {
+      return crypto.randomUUID();
+    } catch {
+      return 'dnukha_' + Math.random().toString(36).substring(2) + Date.now().toString(36);
+    }
+  });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
 
@@ -26,12 +32,11 @@ export default function Onboarding({ onComplete }: Props) {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'X-Telegram-Init-Data': (window as any).Telegram?.WebApp?.initData ?? '',
         },
         body: JSON.stringify({ phone: phone.trim(), session_ref: sessionRef }),
       });
       const data = await res.json();
-      if (!res.ok) throw new Error(data.error ?? 'Ошибка');
+      if (!res.ok) throw new Error(data.error ?? 'Ошибка сервера');
       setCodeHash(data.phone_code_hash);
       setStep('code');
     } catch (e: any) {
@@ -46,11 +51,12 @@ export default function Onboarding({ onComplete }: Props) {
     setLoading(true);
     setError('');
     try {
+      const initData = (window as any).Telegram?.WebApp?.initData ?? '';
       const res = await fetch('/api/auth/verify', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'X-Telegram-Init-Data': (window as any).Telegram?.WebApp?.initData ?? '',
+          'X-Telegram-Init-Data': encodeURIComponent(initData),
         },
         body: JSON.stringify({
           phone: phone.trim(),
@@ -108,13 +114,13 @@ export default function Onboarding({ onComplete }: Props) {
   if (step === 'phone') return (
     <div className="onboarding onboarding--center">
       <div className="ob-hero">📱</div>
-      <h2>Введи номер телефона</h2>
-      <p className="ob-sub">Тот же номер, что привязан к твоему Telegram-аккаунту.</p>
+      <h2>Вход в аккаунт</h2>
+      <p className="ob-sub">Для работы бота нужно подключить твой Telegram-аккаунт через официальный протокол.</p>
 
       <div className="ob-input-group">
         <input
           className="ob-input"
-          type="tel"
+          type="text"
           placeholder="+7 900 000 00 00"
           value={phone}
           onChange={e => setPhone(e.target.value)}
@@ -126,6 +132,15 @@ export default function Onboarding({ onComplete }: Props) {
 
       <button className="btn-primary btn-full ob-btn" onClick={handleSendCode} disabled={loading || !phone.trim()}>
         {loading ? 'Отправляю код...' : 'Получить код'}
+      </button>
+
+      <div className="ob-disclaimer">
+        Бот запрашивает доступ только к отправке сообщений и чтению системных уведомлений о днях рождения. 
+        Мы <b>не имеем доступа</b> к твоим личным перепискам.
+      </div>
+
+      <button className="btn-ghost ob-btn-back" onClick={() => setStep('welcome')}>
+        ← Назад
       </button>
     </div>
   );

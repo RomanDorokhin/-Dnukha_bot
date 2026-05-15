@@ -14,8 +14,9 @@ const app = new Hono<{ Bindings: Bindings }>();
 
 // ─── Middleware: Auth validation ───────────────────────────────────────────────
 async function getTgUser(c: any): Promise<{ id: number; tg_id: string } | null> {
-  const initData = c.req.header('X-Telegram-Init-Data');
-  if (!initData) return null;
+  const rawInitData = c.req.header('X-Telegram-Init-Data');
+  if (!rawInitData) return null;
+  const initData = decodeURIComponent(rawInitData);
 
   const { valid, user: tgUser } = await validateTelegramInitData(initData, c.env.BOT_TOKEN);
   if (!valid || !tgUser) return null;
@@ -147,8 +148,11 @@ app.post('/api/ai/generate', async (c) => {
 app.get('/api/settings', async (c) => {
   const user = await getTgUser(c);
   if (!user) return c.json({ error: 'Unauthorized' }, 401);
-  const data = await c.env.DB.prepare('SELECT tg_username, tg_name, auto_mode FROM users WHERE id = ?').bind(user.id).first();
-  return c.json(data);
+  const data = await c.env.DB.prepare('SELECT tg_username, tg_name, auto_mode, session_ref FROM users WHERE id = ?').bind(user.id).first<any>();
+  return c.json({
+    ...data,
+    has_session: !!data.session_ref
+  });
 });
 
 app.put('/api/settings', async (c) => {
@@ -209,7 +213,7 @@ app.post('/api/internal/auto-send', async (c) => {
 app.get('/decrypt-key', async (c) => {
   const token = c.req.header('X-Internal-Token');
   if (token !== c.env.INTERNAL_TOKEN) return c.text('Unauthorized', 401);
-  return c.text(c.env.DECRYPTION_KEY);
+  return c.json({ key: c.env.DECRYPTION_KEY });
 });
 
 // ─── Cron Handler ──────────────────────────────────────────────────────────────

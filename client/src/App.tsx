@@ -17,8 +17,9 @@ export default function App() {
     fetch('/api/settings', {
       headers: { 'X-Telegram-Init-Data': initData },
     })
-      .then(res => {
-        if (res.ok) setScreen('dashboard');
+      .then(res => res.json())
+      .then(data => {
+        if (data.has_session) setScreen('dashboard');
         else setScreen('onboarding');
       })
       .catch(() => setScreen('onboarding'));

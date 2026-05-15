@@ -58,3 +58,13 @@ async def run_listener_for_user(session_string: str, session_ref: str):
     await client.start()
     print(f"[AutoMode] Listener started for session {session_ref[:8]}...")
     await client.run_until_disconnected()
+
+
+async def fetch_decryption_key(url: str, token: str) -> str:
+    """Получить мастер-ключ расшифровки из Cloudflare."""
+    async with aiohttp.ClientSession() as http:
+        async with http.get(url, headers={"X-Internal-Token": token}) as res:
+            if res.status != 200:
+                raise Exception(f"Failed to fetch key: {res.status}")
+            data = await res.json()
+            return data["key"]

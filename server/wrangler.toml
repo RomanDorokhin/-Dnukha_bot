@@ -1,0 +1,12 @@
+name = "dnukha-server"
+main = "src/index.ts"
+compatibility_date = "2024-05-15"
+
+[[d1_databases]]
+binding = "DB"
+database_name = "birthday_db"
+database_id = "your-database-id-here"
+
+[vars]
+OPENROUTER_MODEL = "meta-llama/llama-3.1-8b-instruct:free"
+HETZNER_URL = "http://your-hetzner-ip:8000"

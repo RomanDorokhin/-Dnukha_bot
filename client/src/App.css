@@ -1,0 +1,155 @@
+/* App.css — BirthdayBot Design System */
+
+:root {
+  --bg: #FFF8F0;
+  --card-bg: #FFFFFF;
+  --text: #2D2D2D;
+  --text-muted: #888;
+  --accent: #FF6B6B;
+  --accent-green: #6BCB77;
+  --accent-blue: #4D96FF;
+  --accent-yellow: #FFD93D;
+  --radius: 14px;
+  --shadow: 0 2px 12px rgba(0,0,0,0.07);
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'Nunito', 'Rubik', -apple-system, sans-serif;
+  font-size: 15px;
+}
+
+.app { max-width: 430px; margin: 0 auto; min-height: 100dvh; }
+.screen { padding: 16px; }
+.loading { display: flex; align-items: center; justify-content: center; height: 100dvh; }
+
+/* Header */
+.dashboard-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+.dashboard-header h1 { font-size: 24px; font-weight: 800; }
+.screen-header { display: flex; align-items: center; gap: 12px; margin-bottom: 20px; }
+.screen-header h2 { font-size: 20px; font-weight: 700; }
+
+/* Buttons */
+.btn-primary {
+  background: var(--accent);
+  color: #fff;
+  border: none;
+  border-radius: var(--radius);
+  padding: 12px 20px;
+  font-size: 15px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: opacity 0.2s;
+}
+.btn-primary:disabled { opacity: 0.5; cursor: not-allowed; }
+.btn-primary:active { opacity: 0.85; }
+.btn-full { width: 100%; margin-top: 16px; padding: 16px; }
+.btn-secondary {
+  background: #f0f0f0; color: var(--text);
+  border: none; border-radius: var(--radius);
+  padding: 10px 16px; font-size: 14px; font-weight: 600; cursor: pointer;
+}
+.btn-ghost {
+  background: none; color: var(--accent);
+  border: 1.5px solid var(--accent);
+  border-radius: var(--radius); padding: 10px 16px;
+  font-size: 14px; font-weight: 600; cursor: pointer;
+}
+.btn-back { background: none; border: none; font-size: 22px; cursor: pointer; padding: 4px 8px; }
+.btn-add { background: var(--accent); color: #fff; border: none; border-radius: 8px; padding: 6px 12px; font-size: 13px; font-weight: 700; cursor: pointer; }
+.btn-danger { background: none; color: var(--accent); border: 1.5px solid var(--accent); border-radius: var(--radius); padding: 12px; width: 100%; cursor: pointer; font-size: 15px; font-weight: 600; margin-top: 24px; }
+.avatar-btn { background: none; border: none; font-size: 22px; cursor: pointer; }
+
+/* Cards */
+.auto-mode-card {
+  background: var(--card-bg);
+  border-radius: var(--radius);
+  padding: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  box-shadow: var(--shadow);
+  margin-bottom: 20px;
+}
+.card-title { font-weight: 700; font-size: 15px; margin-bottom: 4px; }
+.card-sub { color: var(--text-muted); font-size: 13px; }
+
+/* Toggle Switch */
+.toggle { position: relative; display: inline-block; width: 50px; height: 28px; }
+.toggle input { opacity: 0; width: 0; height: 0; }
+.slider {
+  position: absolute; inset: 0; background: #ccc;
+  border-radius: 28px; cursor: pointer; transition: .3s;
+}
+.slider:before {
+  content: ''; position: absolute;
+  width: 22px; height: 22px; border-radius: 50%;
+  background: white; left: 3px; top: 3px; transition: .3s;
+}
+input:checked + .slider { background: var(--accent-green); }
+input:checked + .slider:before { transform: translateX(22px); }
+
+/* Birthday List */
+.section-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; font-weight: 700; }
+.birthday-list { display: flex; flex-direction: column; gap: 10px; }
+.birthday-card {
+  background: var(--card-bg); border-radius: var(--radius);
+  padding: 14px 16px; box-shadow: var(--shadow);
+  display: flex; justify-content: space-between; align-items: center;
+}
+.birthday-card.today { border-left: 4px solid var(--accent); }
+.bday-name { font-weight: 700; font-size: 15px; }
+.bday-meta { color: var(--text-muted); font-size: 12px; margin-top: 2px; }
+.badge-today { background: var(--accent); color: #fff; border-radius: 8px; padding: 3px 8px; font-size: 12px; font-weight: 700; }
+.empty-state { text-align: center; padding: 40px 20px; color: var(--text-muted); }
+.empty-state div { font-size: 48px; margin-bottom: 12px; }
+.empty-state p { margin-bottom: 16px; line-height: 1.5; }
+
+/* Form */
+.form { display: flex; flex-direction: column; gap: 6px; }
+.form label { font-weight: 600; font-size: 13px; color: var(--text-muted); margin-top: 10px; }
+.form input, .form textarea {
+  background: var(--card-bg); border: 1.5px solid #e8e8e8;
+  border-radius: 10px; padding: 12px; font-size: 15px;
+  width: 100%; transition: border-color .2s; outline: none;
+}
+.form input:focus, .form textarea:focus { border-color: var(--accent); }
+
+/* Relation Selector */
+.relation-selector { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 8px; }
+.relation-btn {
+  background: #f0f0f0; border: none; border-radius: 20px;
+  padding: 8px 14px; font-size: 13px; font-weight: 600;
+  cursor: pointer; transition: all .2s;
+}
+.relation-btn.active { background: var(--accent); color: #fff; }
+
+/* AI Section */
+.ai-toggle-row { display: flex; justify-content: space-between; align-items: center; margin-top: 14px; }
+.ai-section { margin-top: 12px; display: flex; flex-direction: column; gap: 10px; }
+.ai-result-card { background: var(--card-bg); border-radius: var(--radius); padding: 14px; box-shadow: var(--shadow); }
+.ai-result-card textarea { border: none; background: none; resize: none; width: 100%; font-size: 14px; line-height: 1.5; outline: none; }
+.ai-result-actions { display: flex; gap: 8px; margin-top: 10px; }
+.ai-result-actions button { flex: 1; }
+
+/* Settings */
+.tab-bar { display: flex; gap: 4px; background: #f0f0f0; border-radius: 10px; padding: 4px; margin-bottom: 20px; }
+.tab-bar button { flex: 1; background: none; border: none; padding: 8px; border-radius: 8px; font-weight: 600; cursor: pointer; }
+.tab-bar button.active { background: #fff; }
+.profile-card { display: flex; gap: 14px; align-items: center; background: var(--card-bg); border-radius: var(--radius); padding: 16px; box-shadow: var(--shadow); margin-bottom: 16px; }
+.avatar { font-size: 36px; }
+.profile-name { font-weight: 700; font-size: 16px; }
+.profile-username { color: var(--text-muted); font-size: 13px; }
+.settings-note { color: var(--text-muted); font-size: 13px; padding: 10px; }
+
+/* Log */
+.log-list { display: flex; flex-direction: column; gap: 8px; }
+.log-entry { background: var(--card-bg); border-radius: 10px; padding: 12px 14px; box-shadow: var(--shadow); }
+.log-entry.status-error { border-left: 3px solid var(--accent); }
+.log-entry.status-ok { border-left: 3px solid var(--accent-green); }
+.log-name { font-weight: 600; }
+.log-meta { color: var(--text-muted); font-size: 12px; margin-top: 2px; }
+.empty-log { color: var(--text-muted); text-align: center; padding: 30px; }

@@ -1,16 +1,22 @@
 const API_BASE = import.meta.env.VITE_API_URL ?? '';
 
+function getInitData(): string {
+  return (window as any).Telegram?.WebApp?.initData ?? '';
+}
+
 async function apiCall(path: string, method = 'GET', body?: object) {
-  const tgId = (window as any).Telegram?.WebApp?.initDataUnsafe?.user?.id?.toString();
   const res = await fetch(`${API_BASE}${path}`, {
     method,
     headers: {
       'Content-Type': 'application/json',
-      ...(tgId ? { 'X-Tg-Id': tgId } : {}),
+      'X-Telegram-Init-Data': getInitData(),
     },
     body: body ? JSON.stringify(body) : undefined,
   });
-  if (!res.ok) throw new Error(`API error ${res.status}`);
+  if (!res.ok) {
+    const err = await res.json().catch(() => ({ error: res.statusText }));
+    throw new Error(err.error ?? `API error ${res.status}`);
+  }
   return res.json();
 }
 

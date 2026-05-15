@@ -1,5 +1,6 @@
 import { Hono } from 'hono';
 import { generateGreeting } from './ai';
+import { validateTelegramInitData } from './tgAuth';
 
 export type Bindings = {
   DB: D1Database;
@@ -13,14 +14,16 @@ const app = new Hono<{ Bindings: Bindings }>();
 
 // ─── Middleware: Auth validation ───────────────────────────────────────────────
 async function getTgUser(c: any): Promise<{ id: number; tg_id: string } | null> {
-  // В реальном проекте тут валидация Telegram initData через HMAC-SHA256
-  // Для скелета — принимаем tg_id из заголовка
-  const tgId = c.req.header('X-Tg-Id');
-  if (!tgId) return null;
-  const user = await c.env.DB.prepare(
+  const initData = c.req.header('X-Telegram-Init-Data');
+  if (!initData) return null;
+
+  const { valid, user: tgUser } = await validateTelegramInitData(initData, c.env.BOT_TOKEN);
+  if (!valid || !tgUser) return null;
+
+  const dbUser = await c.env.DB.prepare(
     'SELECT id, tg_id FROM users WHERE tg_id = ? AND is_active = 1'
-  ).bind(tgId).first<{ id: number; tg_id: string }>();
-  return user ?? null;
+  ).bind(String(tgUser.id)).first<{ id: number; tg_id: string }>();
+  return dbUser ?? null;
 }
 
 // ─── Auth ──────────────────────────────────────────────────────────────────────

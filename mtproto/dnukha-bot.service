@@ -1,0 +1,15 @@
+[Unit]
+Description=BirthdayBot MTProto API Server
+After=network.target
+
+[Service]
+Type=simple
+User=www-data
+WorkingDirectory=/opt/dnukha-bot/mtproto
+ExecStart=/opt/dnukha-bot/venv/bin/uvicorn main:app --host 127.0.0.1 --port 8000
+Restart=always
+RestartSec=5
+EnvironmentFile=/opt/dnukha-bot/mtproto/.env
+
+[Install]
+WantedBy=multi-user.target

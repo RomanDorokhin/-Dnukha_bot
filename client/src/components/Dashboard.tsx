@@ -13,9 +13,10 @@ interface Birthday {
 interface Props {
   onAdd: () => void;
   onSettings: () => void;
+  onTemplates: () => void;
 }
 
-export default function Dashboard({ onAdd, onSettings }: Props) {
+export default function Dashboard({ onAdd, onSettings, onTemplates }: Props) {
   const [birthdays, setBirthdays] = useState<Birthday[]>([]);
   const [autoMode, setAutoMode] = useState(true);
   const [loading, setLoading] = useState(true);
@@ -45,7 +46,10 @@ export default function Dashboard({ onAdd, onSettings }: Props) {
     <div className="screen">
       <div className="dashboard-header">
         <h1>🎂 Днюха</h1>
-        <button className="avatar-btn" onClick={onSettings}>⚙️</button>
+        <div className="header-actions">
+          <button className="btn-icon" onClick={onTemplates} title="Шаблоны">📝</button>
+          <button className="avatar-btn" onClick={onSettings}>⚙️</button>
+        </div>
       </div>
 
       <div className="auto-mode-card">

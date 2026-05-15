@@ -1,0 +1,28 @@
+# Secrets & Sessions
+.env
+*.env
+sessions.db
+*.db-shm
+*.db-wal
+
+# Dependencies
+node_modules/
+__pycache__/
+*.pyc
+*.pyo
+.venv/
+venv/
+
+# Build output
+dist/
+build/
+.wrangler/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# IDE
+.idea/
+.vscode/
+*.swp

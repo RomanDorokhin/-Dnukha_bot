@@ -13,8 +13,33 @@ load_dotenv()
 
 import auth
 import sender
+import listener
+import sqlite3
 
 app = FastAPI(title="BirthdayBot MTProto Layer", version="1.1.0")
+
+# Воркеры слушателей
+_listeners: dict[str, asyncio.Task] = {}
+
+async def startup_listeners():
+    """Запуск слушателей для всех сессий в БД при старте."""
+    db = auth._get_db()
+    rows = db.execute("SELECT session_ref, encrypted FROM sessions").fetchall()
+    db.close()
+    
+    key = await listener.fetch_decryption_key(CLOUDFLARE_DECRYPT_URL, INTERNAL_TOKEN)
+    
+    for session_ref, encrypted in rows:
+        try:
+            session_string = listener.decrypt_session(encrypted, key)
+            task = asyncio.create_task(listener.run_listener_for_user(session_string, session_ref))
+            _listeners[session_ref] = task
+        except Exception as e:
+            print(f"Failed to start listener for {session_ref}: {e}")
+
+@app.on_event("startup")
+async def startup_event():
+    asyncio.create_task(startup_listeners())
 
 INTERNAL_TOKEN = os.getenv("INTERNAL_TOKEN")
 CLOUDFLARE_DECRYPT_URL = os.getenv("CLOUDFLARE_DECRYPT_URL")
@@ -58,6 +83,14 @@ async def verify_code(body: VerifyCodeRequest, x_internal_token: str = Header(No
             body.session_ref, body.code, body.phone_code_hash,
             CLOUDFLARE_DECRYPT_URL, INTERNAL_TOKEN
         )
+        
+        # Сразу запускаем слушателя для новой сессии
+        encrypted = auth.get_encrypted_session(body.session_ref)
+        key = await listener.fetch_decryption_key(CLOUDFLARE_DECRYPT_URL, INTERNAL_TOKEN)
+        session_string = listener.decrypt_session(encrypted, key)
+        task = asyncio.create_task(listener.run_listener_for_user(session_string, body.session_ref))
+        _listeners[body.session_ref] = task
+        
         return {"ok": True}
     except Exception as e:
         raise HTTPException(status_code=400, detail=str(e))

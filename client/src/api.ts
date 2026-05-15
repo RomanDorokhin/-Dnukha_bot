@@ -1,11 +1,14 @@
-const API_BASE = import.meta.env.VITE_API_URL ?? '';
-
 function getInitData(): string {
-  return (window as any).Telegram?.WebApp?.initData ?? '';
+  const raw = (window as any).Telegram?.WebApp?.initData ?? '';
+  try {
+    return encodeURIComponent(raw);
+  } catch {
+    return '';
+  }
 }
 
 async function apiCall(path: string, method = 'GET', body?: object) {
-  const res = await fetch(`${API_BASE}${path}`, {
+  const res = await fetch(path, {
     method,
     headers: {
       'Content-Type': 'application/json',

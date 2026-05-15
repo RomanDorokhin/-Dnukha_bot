@@ -10,7 +10,7 @@ database_id = "f8ebfe41-968f-4761-9df8-85cb767089b1"
 [vars]
 OPENROUTER_MODEL_PRIMARY  = "meta-llama/llama-3.1-8b-instruct:free"
 OPENROUTER_MODEL_FALLBACK = "google/gemma-2-9b-it:free"
-HETZNER_URL = "http://89.167.94.140:8000"
+HETZNER_URL = "https://xn----7sbaf8bgxj5a.xn--p1ai:8443"
 
 [triggers]
 crons = ["*/30 * * * *"]
